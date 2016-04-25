@@ -36,7 +36,47 @@ more parameters .
 #include<stdlib.h>
 
 
+
+#include<stdlib.h>
+
+
+int path(int x1, int y1, int x2, int y2, int *maze, int **m, int columns, int rows);
 int path_exists(int *maze, int rows, int columns, int x1, int y1, int x2, int y2)
 {
-	return 1;
+	//printf("hellp");
+	if (rows <= 0 || columns <= 0 || x1 < 0 || x2<0 || y1 < 0 || y2<0) return 0;
+	int **m;
+	m = (int**)malloc(rows*sizeof(int*));
+	int i, j;
+	for (i = 0; i < rows; i++){
+		m[i] = (int*)malloc(columns*sizeof(int));
+	}
+	for (i = 0; i < rows; i++){
+		for (j = 0; j < columns; j++){
+			m[i][j] = 0;
+		}
+	}
+	int n = path(x1, y1, x2, y2, maze, m, columns, rows);
+	free(m);
+	if (n == 1) return 1;
+	else return 0;
+}
+int path(int x1, int y1, int x2, int y2, int *maze, int **m, int columns, int rows){
+	if (x1 < 0 || y1 < 0 || x1>rows || y1>columns)return 0;
+	if (*((maze + x2*columns) + y2) == 0) return 0;
+	if (x1 == x2&&y1 - 1 == y2)return 1;
+	if (*((maze + x1*columns) + y1) != 1 || m[x1][y1] != 0)
+		return 0;
+	m[x1][y1] = -1;
+
+	if (path(x1, y1 - 1, x2, y2, maze, m, columns, rows) == 1 ||
+		path(x1 + 1, y1, x2, y2, maze, m, columns, rows) == 1 ||
+		path(x1, y1 + 1, x2, y2, maze, m, columns, rows) == 1 ||
+		path(x1 - 1, y1, x2, y2, maze, m, columns, rows) == 1){
+		return 1;
+	}
+
+	m[x1][y1] = 0;
+
+	return 0;
 }

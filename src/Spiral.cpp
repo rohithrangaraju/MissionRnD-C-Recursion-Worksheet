@@ -34,7 +34,58 @@ Note : Check the function Parameters ,Its a double pointer .
 #include "stdafx.h"
 #include<stdlib.h>
 
+#include "stdafx.h"
+#include<stdlib.h>
+
+void spider1(int** p, int* arr, int up, int down, int left, int right, int* i, int j, int k, int go){
+	if (up > down &&left > right) return;
+	if (j<up || j>down || k > right || k < left)return;
+	//printf("j:%d,k:%d\n", j, k);
+	if (k <= right&&go == 0 && j == up){
+
+		arr[(*i)] = p[j][k];
+
+		(*i)++;
+		spider1(p, arr, up, down, left, right, i, j, k + 1, go);
+		go = 1;
+		j++;
+		// printf("------------------------------------");
+
+	}
+	if (j <= down&&go == 1 && k == right){
+		// printf("j:%d,k:%d\n",j,k);
+		arr[(*i)] = p[j][k];
+		(*i)++;
+
+		spider1(p, arr, up, down, left, right, i, j + 1, k, go);
+		go = 2;
+		k--;
+	}
+	if (k >= left&&go == 2 && j == down){
+		// printf("j:%d,k:%d\n",j,k);
+		arr[(*i)] = p[j][k];
+		(*i)++;
+		spider1(p, arr, up, down, left, right, i, j, k - 1, go);
+		go = 3;
+		j--;
+
+	}
+	if (j>up && go == 3 && k == left){
+		// printf("j:%d,k:%d\n",j,k);
+		arr[(*i)] = p[j][k];
+		(*i)++;
+		spider1(p, arr, up, down, left, right, i, j - 1, k, go);
+		go = 0;
+
+	}
+	spider1(p, arr, up + 1, down - 1, left + 1, right - 1, i, up + 1, left + 1, go);
+}
 int *spiral(int rows, int columns, int **input_array)
 {
-	return NULL;
+	if (input_array == NULL || rows <= 0 || columns <= 0)return NULL;
+	int *a = (int*)calloc((rows*columns), sizeof(int));
+	int *index = (int*)calloc(1, sizeof(int));
+	(*index) = 0;
+	spider1(input_array, a, 0, rows - 1, 0, columns - 1, index, 0, 0, 0);
+	return a;
 }

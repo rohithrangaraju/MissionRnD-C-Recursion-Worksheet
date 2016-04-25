@@ -43,6 +43,77 @@ P.S: The Above Problem is just a modified version of a popular BackTracking prob
 */
 
 #include "stdafx.h"
-int solve_nsnipers(int *battlefield, int n){
+#include "stdafx.h"
+int checkRightcolumns(int* maze, int rows, int columns, int n);
+int checkSniperpos(int * maze, int rows, int columns, int n){
+	int i, j;
+	//here we are checking particular columns right side elements
+	for (i = 0; i < n; i++){
+		//printf("%d", *((maze + rows*n) + i));
+		if (*((maze + rows*n) + i) != 0)
+			return 0;
+	}
+
+	//printf("\n");
+	for (i = rows, j = columns; i < n&&j < n; i++, j++){
+		//printf("%d", *((maze + rows*n) + i));
+		//printf("ss");
+		if (*((maze + i*n) + j) != 0)
+			return 0;
+	}
+	//printf("\n");
+
+	for (i = rows, j = columns; i >= 0 && j >= 0; i--, j--){
+		//printf("%d", *((maze + rows*n) + i));
+		if (*((maze + i*n) + j) != 0)
+			return 0;
+	}
+	//printf("\n");
+
+	for (i = rows, j = columns; i >= 0 && j < n; i--, j++){
+		//printf("ss");
+		//printf("%d", *((maze + rows*n) + i));
+		if (*((maze + i*n) + j) != 0)
+			return 0;
+	}
+	//printf("\n");
+
+	for (i = rows, j = columns; i < n && j >= 0; i++, j--){
+		//printf("%d", *((maze + rows*n) + i));
+		if (*((maze + i*n) + j) != 0)
+			return 0;
+	}
+
+	return 1;
+}
+int setSnipers(int *battle, int n, int columns){
+	if (columns >= n) return 1;
+
+	int i;
+
+	//printf("2");
+	for (i = 0; i < n; i++){
+
+		if (checkSniperpos(battle, i, columns, n) == 1){
+			*((battle + i*n) + columns) = 1;
+			if (setSnipers(battle, n, columns + 1) == 1){
+
+				//printf("i:%d\n", i);
+				return 1;
+			}
+			*((battle + i*n) + columns) = 0;
+		}
+
+		//printf("s");
+	}
 	return 0;
+}
+int solve_nsnipers(int *battlefield, int n){
+	if (n <= 0) return 0;
+	int x = setSnipers(battlefield, n, 0);
+	printf("%d\n\n", x);
+	if (x == 1)
+		return 1;
+	else
+		return 0;
 }
